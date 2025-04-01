@@ -1,33 +1,81 @@
-# perfect-pay
+# PerfectPay - Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+<div align="center">
+  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+</div>
 
-## Recommended IDE Setup
+## 🖥️ Visão Geral
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Frontend minimalista para integração com a **PerfectPay API**, desenvolvido com:
 
-## Type Support for `.vue` Imports in TS
+- **Vue 3** (Composition API)
+- **Vuetify** para componentes UI
+- **TypeScript** para tipagem segura
+- **Pinia** para gerenciamento de estado
+- **Polling** para atualização de status
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## ✨ Funcionalidades
 
-## Customize configuration
+1. **Fluxo de Pagamento**:
+    - Tela inicial de seleção de método
+    - Formulário dinâmico por tipo de pagamento
+    - Tela de processamento com polling
+    - Confirmação final
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+2. **Métodos Suportados**:
+    - Cartão de crédito (com validação básica)
+    - Pix (geração automática)
+    - Boleto bancário
 
-## Project Setup
+## 🚀 Backend Oficial
+- Disponível em: [PerfectPay API Backend](https://github.com/pedroerico/perfect-pay-api)
 
-```sh
-yarn
+## 🐋 Executando com Docker
+
+### Pré-requisitos
+- Docker 20.10+
+- Docker Compose 2.0+
+- Git
+
+### Passo a Passo
+
+### 1. Configure as variáveis de ambiente:
+```bash
+git clone https://github.com/seu-usuario/perfectpay-frontend.git
+cd perfectpay-frontend
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-yarn dev
+### 2. Configure as variáveis de ambiente
+```bash
+cp .env.example .env
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-yarn build
+Edite o arquivo `.env`:
+```ini
+VITE_API_BASE_URL=http://backend:8000/api
+PORT=8000
 ```
+
+### 3. Construa e inicie os containers
+```bash
+docker-compose up -d
+```
+
+### 4. Acesse a aplicação
+Abra no navegador:  
+[http://localhost:8000](http://localhost:8000)
+
+### ⚠️ Observações importantes:
+- Certifique-se que:
+    - A porta 8000 está livre
+    - O backend está rodando e acessível
+    - O arquivo `.env` possui as permissões corretas
+
+## 📄 Desenvolvido
+
+Desenvolvido em 31 de março de 2025.
+
+Desenvolvedor: Pedro Érico.
+Email: pedroerico.desenvolvedor@gmail.com
