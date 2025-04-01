@@ -12,7 +12,7 @@ export const createPayment = async (paymentData: PaymentRequest): Promise<Paymen
   })
 
   if (!response.ok) {
-    throw new Error('Falha ao criar pagamenento')
+    throw new Error('Falha ao criar pagamento!')
   }
 
   return await response.json()

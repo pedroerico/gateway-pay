@@ -13,14 +13,14 @@
 					@next="handleAmountSubmit"
 				></payment-amount>
 
-				<payment-method
+				<payment-method-type
 					v-if="step === 2"
 					@back="step = 1"
 					@next="handleMethodSubmit"
-				></payment-method>
+				></payment-method-type>
 
 				<credit-card-form
-					v-if="step === 3 && paymentData.method === 'credit_card'"
+					v-if="step === 3 && paymentMethod === 'credit_card'"
 					@back="step = 2"
 					@submit="handleCreditCardSubmit"
 					:initial-card="paymentData.card"
@@ -40,7 +40,7 @@ import { ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePaymentStore } from '@/stores/paymentStore'
 import PaymentAmount from '@/components/payment/PaymentAmount.vue'
-import PaymentMethod from '@/components/payment/PaymentMethod.vue'
+import PaymentMethodType from '@/components/payment/PaymentMethod.vue'
 import CreditCardForm from '@/components/payment/CreditCardForm.vue'
 import PaymentProcessing from '@/components/payment/PaymentProcessing.vue'
 import NotificationSnackbar from '@/components/shared/NotificationSnackbar.vue'
@@ -54,7 +54,8 @@ const showError = ref(false)
 const errorMessage = ref('')
 const pollingInterval = ref<number | null>(null)
 
-const paymentData = ref<Partial<PaymentRequest>>({
+const paymentData = ref({
+	amount: null as number | null,
 	card: {
 		number: '',
 		holder_name: '',
@@ -77,8 +78,8 @@ const handleAmountSubmit = (amount: number) => {
 	step.value = 2
 }
 
-const handleMethodSubmit = (method: string) => {
-	paymentData.value.method = method as 'credit_card' | 'pix' | 'boleto'
+const handleMethodSubmit = (method: 'credit_card' | 'pix' | 'boleto') => {
+	paymentMethod.value = method
 
 	if (method === 'credit_card') {
 		step.value = 3
@@ -87,25 +88,34 @@ const handleMethodSubmit = (method: string) => {
 	}
 }
 
-const handleCreditCardSubmit = (data: any) => {
+const handleCreditCardSubmit = (data: { card: any; customer: any }) => {
 	paymentData.value.card = data.card
 	paymentData.value.customer = data.customer
-	submitPayment(step.value)
+	submitPayment()
 }
 
-const submitPayment = async (currentStep = 2) => {
+const submitPayment = async () => {
 	step.value = 4
+	showError.value = false
+
+	const payload: PaymentRequest = {
+		amount: paymentData.value.amount!,
+		method: paymentMethod.value
+	}
+
+	if (paymentMethod.value === 'credit_card') {
+		payload.card = paymentData.value.card
+		payload.customer = paymentData.value.customer
+	}
 
 	try {
-		await paymentStore.createNewPayment(paymentData.value as PaymentRequest)
+		await paymentStore.createNewPayment(payload)
 
 		if (paymentStore.currentPayment) {
 			startPolling(paymentStore.currentPayment.id)
 		}
 	} catch (error) {
-		showError.value = true
-		errorMessage.value = error instanceof Error ? error.message : 'Erro ao processar pagamento'
-		step.value = currentStep
+		handleError(error)
 	}
 }
 
@@ -117,29 +127,36 @@ const startPolling = (paymentId: string) => {
 			if (paymentStore.currentPayment) {
 				if (paymentStore.currentPayment.status === 'failed') {
 					stopPolling()
-					step.value = 3
-					showErrorNotification('Pagamento recusado')
+					handlePaymentFailed()
 					return
 				}
+
 				if (paymentStore.currentPayment.status !== 'processing') {
 					stopPolling()
 					router.push({
 						name: 'thank-you',
-						params: {paymentId},
-						query: {from: 'payment'}
+						params: { paymentId },
+						query: { from: 'payment' }
 					})
 				}
 			}
 		} catch (error) {
 			stopPolling()
-			showErrorNotification('Erro com pagamento, verifique as informações')
+			handleError(error)
 		}
 	}, 5000)
 }
 
-const showErrorNotification = (message: string) => {
-	errorMessage.value = message
+const handlePaymentFailed = () => {
+	step.value = paymentMethod.value === 'credit_card' ? 3 : 2
 	showError.value = true
+	errorMessage.value = 'Pagamento recusado. Verifique os dados e tente novamente.'
+}
+
+const handleError = (error: unknown) => {
+	step.value = paymentMethod.value === 'credit_card' ? 3 : 2
+	showError.value = true
+	errorMessage.value = error instanceof Error ? error.message : 'Erro ao processar pagamento'
 }
 
 const stopPolling = () => {
