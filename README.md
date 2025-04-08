@@ -1,4 +1,4 @@
-# PerfectPay - Frontend
+# GatewayPay - Frontend
 
 <div align="center">
   <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white" />
@@ -8,7 +8,7 @@
 
 ## 🖥️ Visão Geral
 
-Frontend minimalista para integração com a **PerfectPay API**, desenvolvido com:
+Frontend minimalista para integração com a **GatewayPay API**, desenvolvido com:
 
 - **Vue 3** (Composition API)
 - **Vuetify** para componentes UI
@@ -30,7 +30,7 @@ Frontend minimalista para integração com a **PerfectPay API**, desenvolvido co
     - Boleto bancário
 
 ## 🚀 Backend Oficial
-- Disponível em: [PerfectPay API Backend](https://github.com/pedroerico/perfect-pay-api)
+- Disponível em: [GatewayPay API Backend](https://github.com/pedroerico/gateway-pay-api)
 
 ## 🐋 Executando com Docker
 
@@ -43,8 +43,8 @@ Frontend minimalista para integração com a **PerfectPay API**, desenvolvido co
 
 ### 1. Configure as variáveis de ambiente:
 ```bash
-git clone https://github.com/seu-usuario/perfectpay-frontend.git
-cd perfectpay-frontend
+git clone https://github.com/pedroerico/gateway-pay.git
+cd gateway-pay
 ```
 
 ### 2. Configure as variáveis de ambiente
